@@ -1,7 +1,9 @@
 package com.marelso.postthread.di
 
+import com.marelso.postthread.data.Constants.SecondaryAPI
 import com.marelso.postthread.data.Constants.PostAPI
 import com.marelso.postthread.data.PostService
+import com.marelso.postthread.data.SecondaryService
 import com.marelso.postthread.ui.ListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -22,6 +24,16 @@ val appModule = module {
     factory(named(PostAPI.NAME)) {
         provideRetrofitInstance(PostAPI.URL)
     }
-    factory { get<Retrofit>(named(PostAPI.NAME)).create(PostService::class.java) }
-    viewModel { ListViewModel(get()) }
+    factory {
+        get<Retrofit>(named(PostAPI.NAME)).create(PostService::class.java)
+    }
+
+    factory(named(SecondaryAPI.NAME)) {
+        provideRetrofitInstance(SecondaryAPI.URL)
+    }
+    factory {
+        get<Retrofit>(named(SecondaryAPI.NAME)).create(SecondaryService::class.java)
+    }
+
+    viewModel { ListViewModel(get(), get()) }
 }
