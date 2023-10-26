@@ -5,6 +5,11 @@ object Constants {
 
     object PostAPI {
         const val URL: String = "http://localhost:8080/"
-        const val NAME = "shopping_api"
+        const val NAME = "post_api"
+    }
+
+    object SecondaryAPI {
+        const val URL: String = "http://localhost:8080/"
+        const val NAME = "another_api"
     }
 }
