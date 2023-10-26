@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,14 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberImagePainter
-import com.marelso.postthread.R
 import com.marelso.postthread.data.Post
 
 @Composable
@@ -35,11 +29,9 @@ fun PostList(viewModel: ListViewModel) {
     val posts = viewModel.pagingData.collectAsLazyPagingItems()
 
     LazyColumn {
-        items(count = posts.itemCount) { index ->
-            val item = posts[index]
-
-            item?.let {
-                PostCard(item)
+        items(posts.itemCount) { index ->
+            posts[index]?.let {
+                PostCard(it)
             }
         }
     }
@@ -53,7 +45,7 @@ fun PostCard(post: Post) {
         .padding(all = 16.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(all = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val painter = rememberImagePainter(post.previewImage)
@@ -62,12 +54,12 @@ fun PostCard(post: Post) {
                 painter = painter,
                 contentDescription = "Post's image preview",
                 modifier = Modifier
-                    .size(90.dp)
+                    .size(80.dp)
                     .clip(CircleShape)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.fillMaxWidth()) {
-                Text(text = post.headline, style = typography.headlineMedium)
+                Text(text = post.headline, style = typography.headlineSmall)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = post.description, style = typography.bodyMedium)
             }

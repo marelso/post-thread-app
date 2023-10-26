@@ -12,13 +12,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostService {
-    @GET
+    @GET("/posts")
     suspend fun get(
         @Query("page") page: Int,
         @Query("size") size: Int = PAGE_SIZE
     ): Response<Page<Post>>
 
-    @GET("/{id}")
+    @GET("/posts/{id}")
     suspend fun get(@Path("id") id: Int): Response<Post>
 
     @POST
