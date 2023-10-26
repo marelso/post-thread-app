@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberImagePainter
@@ -28,7 +29,7 @@ import com.marelso.postthread.data.Post
 fun PostList(viewModel: ListViewModel) {
     val posts = viewModel.pagingData.collectAsLazyPagingItems()
 
-    LazyColumn {
+    LazyColumn() {
         items(posts.itemCount) { index ->
             posts[index]?.let {
                 PostCard(it)
@@ -61,7 +62,12 @@ fun PostCard(post: Post) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(text = post.headline, style = typography.headlineSmall)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = post.description, style = typography.bodyMedium)
+                Text(
+                    text = post.description,
+                    style = typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
