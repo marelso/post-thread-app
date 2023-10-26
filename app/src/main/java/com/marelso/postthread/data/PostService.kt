@@ -1,5 +1,6 @@
 package com.marelso.postthread.data
 
+import com.marelso.postthread.data.Constants.PAGE_SIZE
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -12,7 +13,10 @@ import retrofit2.http.Query
 
 interface PostService {
     @GET
-    suspend fun get(@Query("page") page: Int, @Query("size") size: Int): Response<Page<Post>>
+    suspend fun get(
+        @Query("page") page: Int,
+        @Query("size") size: Int = PAGE_SIZE
+    ): Response<Page<Post>>
 
     @GET("/{id}")
     suspend fun get(@Path("id") id: Int): Response<Post>
@@ -21,10 +25,16 @@ interface PostService {
     suspend fun post(@Body post: Post): Response<Post>
 
     @PUT("/posts/{id}")
-    suspend fun put(@Path("id") id: Int, @Body request: Post): Response<Post>
+    suspend fun put(
+        @Path("id") id: Int,
+        @Body request: Post
+    ): Response<Post>
 
     @PATCH("/posts/{id}")
-    suspend fun patch(@Path("id") id: Int, @Query("status") status: Boolean): Response<Unit>
+    suspend fun patch(
+        @Path("id") id: Int,
+        @Query("status") status: Boolean
+    ): Response<Unit>
 
     @DELETE("/posts/{id}")
     suspend fun delete(@Path("id") id: Int): Response<Unit>
