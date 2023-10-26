@@ -54,6 +54,10 @@ dependencies {
     //Koin
     implementation 'io.insert-koin:koin-androidx-compose:3.2.0'
 
+    //Paging 3
+    implementation "androidx.paging:paging-compose:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
+
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
