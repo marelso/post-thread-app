@@ -54,6 +54,9 @@ dependencies {
     //Koin
     implementation 'io.insert-koin:koin-androidx-compose:3.2.0'
 
+    //Coil
+    implementation("io.coil-kt:coil-compose:1.4.0")
+
     //Paging 3
     implementation "androidx.paging:paging-compose:3.2.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0-alpha03"
