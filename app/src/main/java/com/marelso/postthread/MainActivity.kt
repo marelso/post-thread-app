@@ -5,18 +5,28 @@ package com.marelso.postthread
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,8 +44,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,6 +57,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.marelso.postthread.data.Post
 import com.marelso.postthread.ui.PostDetailViewModel
 import com.marelso.postthread.ui.PostListViewModel
@@ -108,24 +126,40 @@ fun PostDetailScreen(
     val postUiState = viewModel.postUiState.collectAsState()
 
     when (postUiState.value) {
-        is PostUiState.Loading -> Text(text = "Loading")
+        is PostUiState.Loading -> PostDetailLoading()
 
         is PostUiState.Error -> {
             val error = (postUiState.value as PostUiState.Error)
-            PopError(headline = error.headline, subtitle = error.subtitle, onClick = {
-                refresh(viewModel.reference, viewModel)
-            })
+            PopError(
+                headline = error.headline,
+                subtitle = error.subtitle,
+                onClick = {
+                    refresh(viewModel)
+                })
         }
 
         is PostUiState.Success -> {
             val post = (postUiState.value as PostUiState.Success).post
 
-            OnSuccess(post = post,
+            PostDetail(
+                post = post,
                 goBack = { goBack(navHostController, Screen.Home) },
                 updateStatus = {
                     changePostStatus(it, viewModel)
-                })
+                }
+            )
         }
+    }
+}
+
+@Composable
+fun PostDetailLoading() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator()
     }
 }
 
@@ -141,13 +175,14 @@ fun changePostStatus(status: Boolean, viewModel: PostDetailViewModel) {
     viewModel.changePostStatus(status)
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
-fun OnSuccess(
+fun PostDetail(
     post: Post, updateStatus: (Boolean) -> Unit, goBack: (Unit) -> Unit
 ) {
     var status by remember { mutableStateOf(post.status) }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 16.dp)
@@ -168,10 +203,56 @@ fun OnSuccess(
                     updateStatus.invoke(status)
                 })
             })
+        SubcomposeAsyncImage(
+            model = post.bannerImage,
+            loading = {
+                CircularProgressIndicator()
+            },
+            contentDescription = "Post's image preview",
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(25.dp))
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SubcomposeAsyncImage(
+                model = post.previewImage,
+                loading = {
+                    CircularProgressIndicator()
+                },
+                contentDescription = "Post's image preview",
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .padding(end = 8.dp)
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(25.dp))
+            )
+
+            Text(
+                text = post.headline, style = typography.headlineSmall
+            )
+        }
+
+        Text(
+            modifier = Modifier.padding(bottom = 8.dp),
+            text = post.description, style = typography.displayLarge.copy(
+                fontWeight = FontWeight.Bold, fontSize = 16.sp
+            )
+        )
+        Text(
+            text = post.content, style = typography.bodyLarge.copy(
+                fontWeight = FontWeight.Normal, fontSize = 20.sp
+            )
+        )
     }
 }
 
-fun refresh(reference: Int, viewModel: PostDetailViewModel) {
+fun refresh(viewModel: PostDetailViewModel) {
     viewModel.refresh(2)
 }
 

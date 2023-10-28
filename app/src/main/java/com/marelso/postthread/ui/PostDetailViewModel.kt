@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 class PostDetailViewModel(
     private val service: PostService, var reference: Int
 ) : ViewModel() {
-    var post: Post? = null
     private val _postUiState = MutableStateFlow<PostUiState>(
         PostUiState.Loading
     )
