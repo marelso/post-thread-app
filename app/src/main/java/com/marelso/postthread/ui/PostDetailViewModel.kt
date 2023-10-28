@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class PostDetailViewModel(
-    private val service: PostService, private val reference: Int
+    private val service: PostService, var reference: Int
 ) : ViewModel() {
     private var post: Post? = null
     private val _postUiState = MutableStateFlow<PostUiState>(
@@ -26,6 +26,11 @@ class PostDetailViewModel(
         else PostUiState.Error(
             subtitle = "There was an error fetching: ${result.code()}"
         )
+    }
+
+    fun refresh() = viewModelScope.launch {
+        _postUiState.value = PostUiState.Loading
+        fetchContent()
     }
 }
 
