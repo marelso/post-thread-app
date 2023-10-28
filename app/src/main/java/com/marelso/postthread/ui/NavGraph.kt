@@ -44,7 +44,7 @@ fun setupNavGraph(navController: NavHostController) {
         ) {
             it.arguments?.getInt(KEY_DETAIL_SCREEN)?.let { reference ->
                 val viewModel = getViewModel<PostDetailViewModel>(
-                    parameters = { parametersOf(90) }
+                    parameters = { parametersOf(reference) }
                 )
 
                 PostDetailScreen(navHostController = navController, viewModel = viewModel)
