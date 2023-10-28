@@ -119,7 +119,7 @@ fun PostDetailScreen(
                 post = post,
                 goBack = { goBack(navHostController, Screen.Home) },
                 updateStatus = {
-                    changePostStatus(it, viewModel)
+                    viewModel.changePostStatus(it)
                 }
             )
         }
@@ -132,10 +132,6 @@ fun goBack(navHostController: NavHostController, screen: Screen) {
             inclusive = true
         }
     }
-}
-
-fun changePostStatus(status: Boolean, viewModel: PostDetailViewModel) {
-    viewModel.changePostStatus(status)
 }
 
 fun refresh(viewModel: PostDetailViewModel) {
