@@ -1,7 +1,6 @@
 package com.marelso.postthread
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -101,7 +101,10 @@ fun PostDetailScreen(viewModel: PostDetailViewModel) {
     when (postUiState.value) {
         is PostUiState.Loading -> Text(text = "Loading")
 
-        is PostUiState.Error -> ErrorScreen("Something went wrong", "Resource not found")
+        is PostUiState.Error -> {
+            val error = (postUiState.value as PostUiState.Error)
+            PopError(error.headline, error.subtitle)
+        }
 
         is PostUiState.Success -> {
             val post = (postUiState.value as PostUiState.Success).post
@@ -110,7 +113,7 @@ fun PostDetailScreen(viewModel: PostDetailViewModel) {
 }
 
 @Composable
-fun ErrorScreen(headline: String, subtitle: String) {
+fun PopError(headline: String, subtitle: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -121,7 +124,8 @@ fun ErrorScreen(headline: String, subtitle: String) {
         Icon(
             modifier = Modifier.graphicsLayer(scaleY = 2f, scaleX = 2f),
             imageVector = Icons.Default.Warning,
-            contentDescription = stringResource(id = R.string.warning)
+            contentDescription = stringResource(id = R.string.warning),
+            tint = Color(android.graphics.Color.parseColor("#FF5252"))
         )
         Text(
             modifier = Modifier.padding(8.dp),
