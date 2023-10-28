@@ -60,11 +60,21 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun HomeScreen(viewModel: PostListViewModel) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-        PostList(posts = viewModel.pagingData.collectAsLazyPagingItems())
+fun HomeScreen(
+    viewModel: PostListViewModel = getViewModel(),
+    navHostController: NavHostController
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        PostList(
+            posts = viewModel.pagingData.collectAsLazyPagingItems(),
+            onClick = {
+                goToDetail(it, navHostController)
+            }
+        )
         FloatingActionButton(
             onClick = {
                 // Handle FloatingActionButton click here
@@ -78,21 +88,56 @@ fun HomeScreen(viewModel: PostListViewModel) {
     }
 }
 
+fun goToDetail(reference: Int, navHostController: NavHostController) {
+    navHostController.navigate(route = Screen.Detail.setId(reference))
+}
+
 @Composable
-fun PostDetailScreen(viewModel: PostListViewModel) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-        PostList(posts = viewModel.pagingData.collectAsLazyPagingItems())
-        FloatingActionButton(
-            onClick = {
-                // Handle FloatingActionButton click here
-            },
-            modifier = Modifier
-                .padding(16.dp)
-                .align(alignment = Alignment.BottomEnd)
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+fun PostDetailScreen(viewModel: PostDetailViewModel) {
+    viewModel.fetchContent()
+
+    val postUiState = viewModel.postUiState.collectAsState()
+
+    when (postUiState.value) {
+        is PostUiState.Loading -> Text(text = "Loading")
+
+        is PostUiState.Error -> ErrorScreen("Something went wrong", "Resource not found")
+
+        is PostUiState.Success -> {
+            val post = (postUiState.value as PostUiState.Success).post
         }
+    }
+}
+
+@Composable
+fun ErrorScreen(headline: String, subtitle: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier.graphicsLayer(scaleY = 2f, scaleX = 2f),
+            imageVector = Icons.Default.Warning,
+            contentDescription = stringResource(id = R.string.warning)
+        )
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = headline,
+            style = typography.displayLarge.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+        )
+        Text(
+            modifier = Modifier.padding(top = 4.dp),
+            text = subtitle,
+            style = typography.displayLarge.copy(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp
+            )
+        )
     }
 }
