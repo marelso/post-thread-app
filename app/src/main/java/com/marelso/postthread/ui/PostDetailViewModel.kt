@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class PostDetailViewModel(
     private val service: PostService, var reference: Int
 ) : ViewModel() {
-    private var post: Post? = null
+    var post: Post? = null
     private val _postUiState = MutableStateFlow<PostUiState>(
         PostUiState.Loading
     )
@@ -31,6 +31,14 @@ class PostDetailViewModel(
     fun refresh() = viewModelScope.launch {
         _postUiState.value = PostUiState.Loading
         fetchContent()
+    }
+
+    fun changePostStatus(status: Boolean) = viewModelScope.launch {
+        val result = service.patch(reference, status)
+
+        post?.let {
+            if(result.isSuccessful) it.status = status
+        }
     }
 }
 
