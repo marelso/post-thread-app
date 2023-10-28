@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PostThread</string>
+    <string name="warning">Something went wrong.</string>
 </resources>
