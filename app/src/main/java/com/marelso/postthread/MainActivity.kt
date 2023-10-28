@@ -253,7 +253,7 @@ fun PostDetail(
 }
 
 fun refresh(viewModel: PostDetailViewModel) {
-    viewModel.refresh(2)
+    viewModel.refresh()
 }
 
 @Composable
