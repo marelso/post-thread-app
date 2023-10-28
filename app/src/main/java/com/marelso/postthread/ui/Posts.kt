@@ -33,6 +33,7 @@ fun PostList(posts: LazyPagingItems<Post>, onClick: ((Int) -> Unit)) {
     LazyColumn {
         items(posts.itemCount) { index ->
             posts[index]?.let {
+                Spacer(modifier = Modifier.size(16.dp))
                 PostCard(it, onClick)
             }
         }
@@ -45,10 +46,11 @@ fun PostCard(post: Post, onClick: ((Int) -> Unit)) {
         .clickable { onClick.invoke(post.reference) }
         .fillMaxWidth()
         .wrapContentHeight()
-        .padding(all = 16.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(all = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             val painter = rememberImagePainter(post.previewImage)

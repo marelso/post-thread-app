@@ -67,7 +67,7 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
         PostList(
             posts = viewModel.pagingData.collectAsLazyPagingItems(),
@@ -80,7 +80,7 @@ fun HomeScreen(
                 // Handle FloatingActionButton click here
             },
             modifier = Modifier
-                .padding(16.dp)
+                .padding(vertical = 16.dp)
                 .align(alignment = Alignment.BottomEnd)
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
