@@ -5,6 +5,7 @@ package com.marelso.postthread.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,10 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,8 +30,10 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,15 +41,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberImagePainter
+import com.marelso.postthread.PopError
 import com.marelso.postthread.R
 import com.marelso.postthread.data.Post
 
@@ -64,7 +71,7 @@ fun PostList(posts: LazyPagingItems<Post>, onClick: ((Int) -> Unit)) {
 @Composable
 fun PostCard(post: Post, onClick: ((Int) -> Unit)) {
     Card(modifier = Modifier
-        .clickable { onClick.invoke(post.reference) }
+        .clickable { post.reference?.let { onClick.invoke(it) } }
         .fillMaxWidth()
         .wrapContentHeight()
     ) {
@@ -117,7 +124,8 @@ fun PostDetail(
                     maxLines = 1,
                     text = post.headline,
                     overflow = TextOverflow.Ellipsis
-                )},
+                )
+            },
             navigationIcon = {
                 Icon(
                     modifier = Modifier.clickable { goBack.invoke(Unit) },
@@ -189,4 +197,260 @@ fun PostDetailLoading() {
     ) {
         CircularProgressIndicator()
     }
+}
+
+@Composable
+fun CreatePostForm(viewModel: CreatePostViewModel, goBack: (Unit) -> Unit) {
+    var step by remember { mutableStateOf<Step>(Step.Images) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+
+        if (step != Step.Complete && step != Step.Loading) TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            title = { Text("Create new post") },
+            navigationIcon = {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable { goBack.invoke(Unit) },
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = stringResource(id = R.string.warning),
+                )
+            })
+
+        when (step) {
+            is Step.Images -> ImagesStep(viewModel = viewModel) {
+                step = Step.BasicInfo
+            }
+
+            is Step.BasicInfo -> BasicInfoStep(viewModel = viewModel) {
+                step = Step.Content
+            }
+
+            is Step.Content -> ContentStep(viewModel = viewModel) {
+                viewModel.create()
+                step = Step.Loading
+            }
+            is Step.Complete -> ResourceCreated {
+                goBack.invoke(Unit)
+            }
+            is Step.Loading -> WaitingPostResponse(viewModel = viewModel) {
+                step = it
+            }
+            is Step.Error -> PopError(
+                headline = "Oops something went wrong while creating new post",
+                subtitle = "Try again later",
+                onClick = { goBack.invoke(Unit) })
+        }
+    }
+}
+
+@Composable
+fun ResourceCreated(onClick: (Unit) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 30.dp),
+                text = "Your post has been successfuly created.",
+                style = typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+            .align(alignment = Alignment.BottomCenter), onClick = { onClick.invoke(Unit) }) {
+            Text("Go to home")
+        }
+    }
+}
+
+@Composable
+fun WaitingPostResponse(viewModel: CreatePostViewModel, onClick: (Step) -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator(modifier = Modifier.size(90.dp))
+    }
+    val state = viewModel.state.collectAsState()
+
+    when(state.value) {
+        is CreateUiState.Success -> onClick.invoke(Step.Complete)
+        is CreateUiState.Error -> onClick.invoke(Step.Error)
+        is CreateUiState.Loading -> {
+            onClick.invoke(Step.Loading)
+        }
+    }
+}
+
+@Composable
+fun BasicInfoStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 30.dp),
+                text = "Share post images with us.",
+                style = typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+
+            TextField(
+                modifier = Modifier.padding(vertical = 16.dp),
+                value = viewModel.headline.value,
+                label = { Text(text = "Post headline") },
+                placeholder = { Text(text = "Your best headline") },
+                onValueChange = {
+                    viewModel.headline.value = it
+                }
+            )
+
+            TextField(
+                modifier = Modifier.padding(vertical = 16.dp),
+                value = viewModel.description.value,
+                label = { Text(text = "Post description") },
+                placeholder = { Text(text = "Awesome description") },
+                onValueChange = {
+                    viewModel.description.value = it
+                }
+            )
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .align(alignment = Alignment.BottomCenter),
+            onClick = { onClick.invoke(Unit) },
+            enabled = viewModel.headline.value.isNotBlank() && viewModel.description.value.isNotBlank()
+        ) {
+            Text("Continue")
+        }
+    }
+}
+
+@Composable
+fun ImagesStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 30.dp),
+                text = "Share post images with us.",
+                style = typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+
+            TextField(
+                modifier = Modifier.padding(vertical = 16.dp),
+                value = viewModel.bannerImage.value,
+                label = { Text(text = "Banner image") },
+                placeholder = { Text(text = "Awesome image") },
+                onValueChange = {
+                    viewModel.bannerImage.value = it
+                }
+            )
+
+            TextField(
+                modifier = Modifier.padding(vertical = 16.dp),
+                value = viewModel.previewImage.value,
+                label = { Text(text = "Preview image") },
+                placeholder = { Text(text = "Awesome image") },
+                onValueChange = {
+                    viewModel.previewImage.value = it
+                }
+            )
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .align(alignment = Alignment.BottomCenter),
+            onClick = { onClick.invoke(Unit) },
+            enabled = viewModel.previewImage.value.isNotBlank() && viewModel.bannerImage.value.isNotBlank()
+        ) {
+            Text("Continue")
+        }
+    }
+}
+
+@Composable
+fun ContentStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = 30.dp),
+                text = "Share what are you thinking with us.",
+                style = typography.headlineLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+
+            TextField(
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxSize(),
+                value = viewModel.content.value,
+                label = { Text(text = "The content goes here") },
+                placeholder = { Text(text = "...") },
+                onValueChange = {
+                    viewModel.content.value = it
+                }
+            )
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .align(alignment = Alignment.BottomCenter),
+            onClick = { onClick.invoke(Unit) },
+            enabled = viewModel.content.value.isNotBlank()
+        ) {
+            Text("Continue")
+        }
+    }
+}
+
+sealed class Step {
+    object Images : Step()
+    object BasicInfo : Step()
+    object Content : Step()
+    object Complete : Step()
+    object Error : Step()
+    object Loading : Step()
 }
