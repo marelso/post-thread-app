@@ -15,13 +15,7 @@ class PostDetailViewModel(
     private val _postUiState = MutableStateFlow<PostUiState>(PostUiState.Loading)
     val postUiState: StateFlow<PostUiState> = _postUiState
 
-    init {
-        fetchContent()
-    }
-
-    private fun fetchContent() = viewModelScope.launch {
-        _postUiState.value = PostUiState.Loading
-
+    fun fetchContent() = viewModelScope.launch {
         val result = service.get(reference)
 
         _postUiState.value = if (result.isSuccessful) result.body()?.let {
