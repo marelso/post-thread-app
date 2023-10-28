@@ -21,7 +21,7 @@ interface PostService {
     @GET("/posts/{id}")
     suspend fun get(@Path("id") id: Int): Response<Post>
 
-    @POST
+    @POST("/posts")
     suspend fun post(@Body post: Post): Response<Post>
 
     @PUT("/posts/{id}")
