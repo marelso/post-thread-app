@@ -12,7 +12,9 @@ class PostDetailViewModel(
     private val service: PostService, private val reference: Int
 ) : ViewModel() {
     private var post: Post? = null
-    private val _postUiState = MutableStateFlow<PostUiState>(PostUiState.Loading)
+    private val _postUiState = MutableStateFlow<PostUiState>(
+        PostUiState.Loading
+    )
     val postUiState: StateFlow<PostUiState> = _postUiState
 
     fun fetchContent() = viewModelScope.launch {
@@ -21,12 +23,18 @@ class PostDetailViewModel(
         _postUiState.value = if (result.isSuccessful) result.body()?.let {
             PostUiState.Success(it)
         } ?: PostUiState.Error(subtitle = "Resource not found")
-        else PostUiState.Error(subtitle = "There was an error fetching: ${result.code()}")
+        else PostUiState.Error(
+            subtitle = "There was an error fetching: ${result.code()}"
+        )
     }
 }
 
 sealed class PostUiState {
     object Loading : PostUiState()
-    data class Error(val headline: String = "Something went wrong", val subtitle: String) : PostUiState()
+    data class Error(
+        val headline: String = "Something went wrong",
+        val subtitle: String
+    ) : PostUiState()
+
     data class Success(val post: Post) : PostUiState()
 }

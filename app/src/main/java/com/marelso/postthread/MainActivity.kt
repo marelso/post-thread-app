@@ -95,7 +95,6 @@ fun goToDetail(reference: Int, navHostController: NavHostController) {
 @Composable
 fun PostDetailScreen(viewModel: PostDetailViewModel) {
     viewModel.fetchContent()
-
     val postUiState = viewModel.postUiState.collectAsState()
 
     when (postUiState.value) {
