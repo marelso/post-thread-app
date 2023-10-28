@@ -47,7 +47,7 @@ fun setupNavGraph(navController: NavHostController) {
                     parameters = { parametersOf(90) }
                 )
 
-                PostDetailScreen(viewModel)
+                PostDetailScreen(navHostController = navController, viewModel = viewModel)
             }
         }
     }
