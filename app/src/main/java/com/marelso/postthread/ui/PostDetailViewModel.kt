@@ -20,13 +20,13 @@ class PostDetailViewModel(
 
         _postUiState.value = if (result.isSuccessful) result.body()?.let {
             PostUiState.Success(it)
-        } ?: PostUiState.Error
-        else PostUiState.Error
+        } ?: PostUiState.Error(subtitle = "Resource not found")
+        else PostUiState.Error(subtitle = "There was an error fetching: ${result.code()}")
     }
 }
 
 sealed class PostUiState {
     object Loading : PostUiState()
-    object Error : PostUiState()
+    data class Error(val headline: String = "Something went wrong", val subtitle: String) : PostUiState()
     data class Success(val post: Post) : PostUiState()
 }
