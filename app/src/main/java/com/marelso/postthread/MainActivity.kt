@@ -53,6 +53,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
 import com.marelso.postthread.data.Post
+import com.marelso.postthread.ui.PostDetail
+import com.marelso.postthread.ui.PostDetailLoading
 import com.marelso.postthread.ui.PostDetailViewModel
 import com.marelso.postthread.ui.PostListViewModel
 import com.marelso.postthread.ui.PostList
@@ -143,17 +145,6 @@ fun PostDetailScreen(
     }
 }
 
-@Composable
-fun PostDetailLoading() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
 fun goBack(navHostController: NavHostController, screen: Screen) {
     navHostController.navigate(screen.route) {
         popUpTo(screen.route) {
@@ -164,88 +155,6 @@ fun goBack(navHostController: NavHostController, screen: Screen) {
 
 fun changePostStatus(status: Boolean, viewModel: PostDetailViewModel) {
     viewModel.changePostStatus(status)
-}
-
-@Composable
-fun PostDetail(
-    post: Post, updateStatus: (Boolean) -> Unit, goBack: (Unit) -> Unit
-) {
-    var status by remember { mutableStateOf(post.status) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 16.dp)
-            .padding(horizontal = 16.dp)
-    ) {
-        TopAppBar(modifier = Modifier.fillMaxWidth(),
-            title = {
-                Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    maxLines = 1,
-                    text = post.headline,
-                    overflow = TextOverflow.Ellipsis
-                )},
-            navigationIcon = {
-                Icon(
-                    modifier = Modifier.clickable { goBack.invoke(Unit) },
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = stringResource(id = R.string.warning),
-                )
-            },
-            actions = {
-                Switch(checked = status, onCheckedChange = {
-                    status = it
-                    updateStatus.invoke(status)
-                })
-            })
-        SubcomposeAsyncImage(
-            model = post.bannerImage,
-            loading = {
-                LinearProgressIndicator()
-            },
-            contentDescription = "Post's image preview",
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(25.dp))
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SubcomposeAsyncImage(
-                model = post.previewImage,
-                loading = {
-                    CircularProgressIndicator()
-                },
-                contentDescription = "Post's image preview",
-                modifier = Modifier
-                    .padding(vertical = 20.dp)
-                    .padding(end = 8.dp)
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(25.dp))
-            )
-
-            Text(
-                text = post.headline, style = typography.headlineSmall
-            )
-        }
-
-        Text(
-            modifier = Modifier.padding(bottom = 8.dp),
-            text = post.description, style = typography.displayLarge.copy(
-                fontWeight = FontWeight.Bold, fontSize = 16.sp
-            )
-        )
-        Text(
-            text = post.content, style = typography.bodyLarge.copy(
-                fontWeight = FontWeight.Normal, fontSize = 20.sp
-            )
-        )
-    }
 }
 
 fun refresh(viewModel: PostDetailViewModel) {
