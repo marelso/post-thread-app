@@ -154,7 +154,7 @@ fun OnSuccess(
             .padding(horizontal = 16.dp)
     ) {
         TopAppBar(modifier = Modifier.fillMaxWidth(),
-            title = { Text(modifier = Modifier.padding(vertical = 8.dp), text = post.headline) },
+            title = { Text(modifier = Modifier.padding(horizontal = 8.dp), text = post.headline) },
             navigationIcon = {
                 Icon(
                     modifier = Modifier.clickable { goBack.invoke(Unit) },
