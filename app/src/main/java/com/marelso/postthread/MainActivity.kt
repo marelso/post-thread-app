@@ -61,8 +61,7 @@ class MainActivity : ComponentActivity() {
             PostThreadTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     navController = rememberNavController()
                     setupNavGraph(navController = navController)
@@ -75,25 +74,20 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun HomeScreen(
-    viewModel: PostListViewModel = getViewModel(),
-    navHostController: NavHostController
+    viewModel: PostListViewModel = getViewModel(), navHostController: NavHostController
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        PostList(
-            posts = viewModel.pagingData.collectAsLazyPagingItems(),
-            onClick = {
-                goToDetail(it, navHostController)
-            }
-        )
+        PostList(posts = viewModel.pagingData.collectAsLazyPagingItems(), onClick = {
+            goToDetail(it, navHostController)
+        })
         FloatingActionButton(
             onClick = {
                 // Handle FloatingActionButton click here
-            },
-            modifier = Modifier
+            }, modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(alignment = Alignment.BottomEnd)
         ) {
@@ -108,8 +102,7 @@ fun goToDetail(reference: Int, navHostController: NavHostController) {
 
 @Composable
 fun PostDetailScreen(
-    viewModel: PostDetailViewModel,
-    navHostController: NavHostController
+    viewModel: PostDetailViewModel, navHostController: NavHostController
 ) {
     viewModel.fetchContent()
     val postUiState = viewModel.postUiState.collectAsState()
@@ -119,24 +112,19 @@ fun PostDetailScreen(
 
         is PostUiState.Error -> {
             val error = (postUiState.value as PostUiState.Error)
-            PopError(
-                headline = error.headline,
-                subtitle = error.subtitle,
-                onClick = {
-                    refresh(viewModel.reference, viewModel)
-                })
+            PopError(headline = error.headline, subtitle = error.subtitle, onClick = {
+                refresh(viewModel.reference, viewModel)
+            })
         }
 
         is PostUiState.Success -> {
             val post = (postUiState.value as PostUiState.Success).post
 
-            OnSuccess(
-                post = post,
+            OnSuccess(post = post,
                 goBack = { goBack(navHostController, Screen.Home) },
                 updateStatus = {
                     changePostStatus(it, viewModel)
-                }
-            )
+                })
         }
     }
 }
@@ -155,20 +143,18 @@ fun changePostStatus(status: Boolean, viewModel: PostDetailViewModel) {
 
 @Composable
 fun OnSuccess(
-    post: Post,
-    updateStatus: (Boolean) -> Unit,
-    goBack: (Unit) -> Unit
+    post: Post, updateStatus: (Boolean) -> Unit, goBack: (Unit) -> Unit
 ) {
     var status by remember { mutableStateOf(post.status) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(all = 16.dp)
+            .padding(bottom = 16.dp)
+            .padding(horizontal = 16.dp)
     ) {
-        TopAppBar(
-            modifier = Modifier.fillMaxWidth(),
-            title = { Text(text = post.headline) },
+        TopAppBar(modifier = Modifier.fillMaxWidth(),
+            title = { Text(modifier = Modifier.padding(vertical = 8.dp), text = post.headline) },
             navigationIcon = {
                 Icon(
                     modifier = Modifier.clickable { goBack.invoke(Unit) },
@@ -177,16 +163,11 @@ fun OnSuccess(
                 )
             },
             actions = {
-                Switch(
-                    checked = status,
-                    onCheckedChange = {
-                        status = it
-                        updateStatus.invoke(status)
-                    },
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-            }
-        )
+                Switch(checked = status, onCheckedChange = {
+                    status = it
+                    updateStatus.invoke(status)
+                })
+            })
     }
 }
 
@@ -202,8 +183,7 @@ fun PopError(headline: String, subtitle: String, onClick: ((Unit) -> Unit)) {
             .padding(all = 32.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -217,26 +197,21 @@ fun PopError(headline: String, subtitle: String, onClick: ((Unit) -> Unit)) {
                 modifier = Modifier.padding(8.dp),
                 text = headline,
                 style = typography.displayLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontWeight = FontWeight.Bold, fontSize = 20.sp
                 )
             )
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = subtitle,
                 style = typography.displayLarge.copy(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp
+                    fontWeight = FontWeight.Normal, fontSize = 16.sp
                 )
             )
         }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .align(alignment = Alignment.BottomCenter),
-            onClick = { onClick.invoke(Unit) }
-        ) {
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+            .align(alignment = Alignment.BottomCenter), onClick = { onClick.invoke(Unit) }) {
             Text("Refresh")
         }
     }
