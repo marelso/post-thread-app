@@ -4,7 +4,9 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.marelso.postthread.data.Constants.PAGE_SIZE
 
-class PostPagingSource(private val service: PostService): PagingSource<Int, Post>() {
+class PostPagingSource(
+    private val service: PostService
+) : PagingSource<Int, Post>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Post> {
         return try {
             val currentPage = params.key ?: 0

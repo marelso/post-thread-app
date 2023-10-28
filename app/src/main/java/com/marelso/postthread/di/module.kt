@@ -25,14 +25,16 @@ val appModule = module {
         provideRetrofitInstance(PostAPI.URL)
     }
     factory {
-        get<Retrofit>(named(PostAPI.NAME)).create(PostService::class.java)
+        get<Retrofit>(named(PostAPI.NAME))
+            .create(PostService::class.java)
     }
 
     factory(named(SecondaryAPI.NAME)) {
         provideRetrofitInstance(SecondaryAPI.URL)
     }
     factory {
-        get<Retrofit>(named(SecondaryAPI.NAME)).create(SecondaryService::class.java)
+        get<Retrofit>(named(SecondaryAPI.NAME))
+            .create(SecondaryService::class.java)
     }
 
     viewModel { ListViewModel(get(), get()) }

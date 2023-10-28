@@ -10,7 +10,10 @@ import com.marelso.postthread.data.PostPagingSource
 import com.marelso.postthread.data.PostService
 import com.marelso.postthread.data.SecondaryService
 
-class ListViewModel(private val service: PostService, private val secondaryService: SecondaryService): ViewModel() {
+class ListViewModel(
+    private val service: PostService,
+    private val secondaryService: SecondaryService
+) : ViewModel() {
     private val postApiService = PostApi.instance
     val pagingData = Pager(PagingConfig(pageSize = 20)) {
         PostPagingSource(service)
