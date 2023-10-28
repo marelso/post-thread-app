@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -178,7 +179,13 @@ fun PostDetail(
             .padding(horizontal = 16.dp)
     ) {
         TopAppBar(modifier = Modifier.fillMaxWidth(),
-            title = { Text(modifier = Modifier.padding(horizontal = 8.dp), text = post.headline) },
+            title = {
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    maxLines = 1,
+                    text = post.headline,
+                    overflow = TextOverflow.Ellipsis
+                )},
             navigationIcon = {
                 Icon(
                     modifier = Modifier.clickable { goBack.invoke(Unit) },
