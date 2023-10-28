@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -102,7 +104,12 @@ fun PostDetailScreen(viewModel: PostDetailViewModel) {
 
         is PostUiState.Error -> {
             val error = (postUiState.value as PostUiState.Error)
-            PopError(error.headline, error.subtitle)
+            PopError(
+                headline = error.headline,
+                subtitle = error.subtitle,
+                onClick = {
+                    refresh(viewModel.reference, viewModel)
+                })
         }
 
         is PostUiState.Success -> {
@@ -111,36 +118,54 @@ fun PostDetailScreen(viewModel: PostDetailViewModel) {
     }
 }
 
+fun refresh(reference: Int, viewModel: PostDetailViewModel) {
+    viewModel.refresh(2)
+}
+
 @Composable
-fun PopError(headline: String, subtitle: String) {
-    Column(
+fun PopError(headline: String, subtitle: String, onClick: ((Unit) -> Unit)) {
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(all = 32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(all = 32.dp)
     ) {
-        Icon(
-            modifier = Modifier.graphicsLayer(scaleY = 2f, scaleX = 2f),
-            imageVector = Icons.Default.Warning,
-            contentDescription = stringResource(id = R.string.warning),
-            tint = Color(android.graphics.Color.parseColor("#FF5252"))
-        )
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = headline,
-            style = typography.displayLarge.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                modifier = Modifier.graphicsLayer(scaleY = 2f, scaleX = 2f),
+                imageVector = Icons.Default.Warning,
+                contentDescription = stringResource(id = R.string.warning),
+                tint = Color(android.graphics.Color.parseColor("#FF5252"))
             )
-        )
-        Text(
-            modifier = Modifier.padding(top = 4.dp),
-            text = subtitle,
-            style = typography.displayLarge.copy(
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = headline,
+                style = typography.displayLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
             )
-        )
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = subtitle,
+                style = typography.displayLarge.copy(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp
+                )
+            )
+        }
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .align(alignment = Alignment.BottomCenter),
+            onClick = { onClick.invoke(Unit) }
+        ) {
+            Text("Refresh")
+        }
     }
 }
