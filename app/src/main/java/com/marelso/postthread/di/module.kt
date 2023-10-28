@@ -4,7 +4,7 @@ import com.marelso.postthread.data.Constants.SecondaryAPI
 import com.marelso.postthread.data.Constants.PostAPI
 import com.marelso.postthread.data.PostService
 import com.marelso.postthread.data.SecondaryService
-import com.marelso.postthread.ui.ListViewModel
+import com.marelso.postthread.ui.PostListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -37,5 +37,5 @@ val appModule = module {
             .create(SecondaryService::class.java)
     }
 
-    viewModel { ListViewModel(get(), get()) }
+    viewModel { PostListViewModel(get(), get()) }
 }
