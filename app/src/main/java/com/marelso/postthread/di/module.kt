@@ -4,6 +4,7 @@ import com.marelso.postthread.data.Constants.SecondaryAPI
 import com.marelso.postthread.data.Constants.PostAPI
 import com.marelso.postthread.data.PostService
 import com.marelso.postthread.data.SecondaryService
+import com.marelso.postthread.ui.PostDetailViewModel
 import com.marelso.postthread.ui.PostListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -38,4 +39,8 @@ val appModule = module {
     }
 
     viewModel { PostListViewModel(get(), get()) }
+    viewModel { (reference: Int) -> PostDetailViewModel(
+        service = get(),
+        reference = reference
+    )}
 }
