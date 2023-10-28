@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.marelso.postthread.ui.CreatePostForm
+import com.marelso.postthread.ui.CreatePostViewModel
 import com.marelso.postthread.ui.PostDetail
 import com.marelso.postthread.ui.PostDetailLoading
 import com.marelso.postthread.ui.PostDetailViewModel
@@ -78,7 +80,7 @@ fun HomeScreen(
         })
         FloatingActionButton(
             onClick = {
-                // Handle FloatingActionButton click here
+                navHostController.navigate(Screen.Create.route)
             }, modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(alignment = Alignment.BottomEnd)
@@ -136,6 +138,17 @@ fun goBack(navHostController: NavHostController, screen: Screen) {
 
 fun refresh(viewModel: PostDetailViewModel) {
     viewModel.refresh()
+}
+
+@Composable
+fun CreatePostScreen(viewModel: CreatePostViewModel = getViewModel(), navHostController: NavHostController) {
+    CreatePostForm(
+        viewModel = viewModel,
+        goBack = { goBack(
+            navHostController = navHostController,
+            screen = Screen.Home
+        )}
+    )
 }
 
 @Composable
