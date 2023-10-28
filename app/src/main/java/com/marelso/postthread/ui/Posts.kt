@@ -21,15 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberImagePainter
 import com.marelso.postthread.data.Post
 
 @Composable
-fun PostList(viewModel: ListViewModel) {
-    val posts = viewModel.pagingData.collectAsLazyPagingItems()
-
-    LazyColumn() {
+fun PostList(posts: LazyPagingItems<Post>) {
+    LazyColumn {
         items(posts.itemCount) { index ->
             posts[index]?.let {
                 PostCard(it)
