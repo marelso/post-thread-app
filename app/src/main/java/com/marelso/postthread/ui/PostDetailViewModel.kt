@@ -34,11 +34,7 @@ class PostDetailViewModel(
     }
 
     fun changePostStatus(status: Boolean) = viewModelScope.launch {
-        val result = service.patch(reference, status)
-
-        post?.let {
-            if(result.isSuccessful) it.status = status
-        }
+        service.patch(reference, status)
     }
 }
 
