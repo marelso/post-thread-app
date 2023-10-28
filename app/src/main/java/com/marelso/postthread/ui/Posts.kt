@@ -1,6 +1,7 @@
 package com.marelso.postthread.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,19 +29,20 @@ import coil.compose.rememberImagePainter
 import com.marelso.postthread.data.Post
 
 @Composable
-fun PostList(posts: LazyPagingItems<Post>) {
+fun PostList(posts: LazyPagingItems<Post>, onClick: ((Int) -> Unit)) {
     LazyColumn {
         items(posts.itemCount) { index ->
             posts[index]?.let {
-                PostCard(it)
+                PostCard(it, onClick)
             }
         }
     }
 }
 
 @Composable
-fun PostCard(post: Post) {
+fun PostCard(post: Post, onClick: ((Int) -> Unit)) {
     Card(modifier = Modifier
+        .clickable { onClick.invoke(post.reference) }
         .fillMaxWidth()
         .wrapContentHeight()
         .padding(all = 16.dp)
