@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -55,7 +56,7 @@ fun PostCard(post: Post) {
                 contentDescription = "Post's image preview",
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(CircleShape)
+                    .clip(RoundedCornerShape(10.dp))
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.fillMaxWidth()) {
