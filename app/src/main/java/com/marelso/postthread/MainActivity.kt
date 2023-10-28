@@ -5,11 +5,6 @@ package com.marelso.postthread
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,11 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -58,10 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
 import com.marelso.postthread.data.Post
 import com.marelso.postthread.ui.PostDetailViewModel
 import com.marelso.postthread.ui.PostListViewModel
@@ -176,7 +165,6 @@ fun changePostStatus(status: Boolean, viewModel: PostDetailViewModel) {
     viewModel.changePostStatus(status)
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun PostDetail(
     post: Post, updateStatus: (Boolean) -> Unit, goBack: (Unit) -> Unit
