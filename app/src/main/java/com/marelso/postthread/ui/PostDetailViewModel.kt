@@ -35,6 +35,10 @@ class PostDetailViewModel(
     fun changePostStatus(status: Boolean) = viewModelScope.launch {
         service.patch(reference, status)
     }
+
+    fun deletePost() = viewModelScope.launch {
+        service.delete(reference)
+    }
 }
 
 sealed class PostUiState {
