@@ -98,7 +98,6 @@ fun goToDetail(reference: Int, navHostController: NavHostController) {
 fun PostDetailScreen(
     viewModel: PostDetailViewModel, navHostController: NavHostController
 ) {
-    viewModel.fetchContent()
     val postUiState = viewModel.postUiState.collectAsState()
 
     when (postUiState.value) {
@@ -128,6 +127,55 @@ fun PostDetailScreen(
                 }
             )
         }
+
+        is PostUiState.Delete -> {
+            DeleteCompleted(
+                onClick = {
+                    goBack(navHostController, Screen.Home)
+                })
+        }
+    }
+}
+
+@Composable
+fun DeleteCompleted(onClick: ((Unit) -> Unit)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 32.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                modifier = Modifier.graphicsLayer(scaleY = 2f, scaleX = 2f),
+                imageVector = Icons.Default.Warning,
+                contentDescription = stringResource(id = R.string.warning),
+                tint = Color(android.graphics.Color.parseColor("#FF5252"))
+            )
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = "Resource successfully deleted",
+                style = typography.displayLarge.copy(
+                    fontWeight = FontWeight.Bold, fontSize = 20.sp
+                )
+            )
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = "You can now go to the home",
+                style = typography.displayLarge.copy(
+                    fontWeight = FontWeight.Normal, fontSize = 16.sp
+                )
+            )
+        }
+        Button(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+            .align(alignment = Alignment.BottomCenter), onClick = { onClick.invoke(Unit) }) {
+            Text("Take me to home")
+        }
     }
 }
 
@@ -144,13 +192,18 @@ fun refresh(viewModel: PostDetailViewModel) {
 }
 
 @Composable
-fun CreatePostScreen(viewModel: CreatePostViewModel = getViewModel(), navHostController: NavHostController) {
+fun CreatePostScreen(
+    viewModel: CreatePostViewModel = getViewModel(),
+    navHostController: NavHostController
+) {
     CreatePostForm(
         viewModel = viewModel,
-        goBack = { goBack(
-            navHostController = navHostController,
-            screen = Screen.Home
-        )}
+        goBack = {
+            goBack(
+                navHostController = navHostController,
+                screen = Screen.Home
+            )
+        }
     )
 }
 
