@@ -122,6 +122,9 @@ fun PostDetailScreen(
                 goBack = { goBack(navHostController, Screen.Home) },
                 updateStatus = {
                     viewModel.changePostStatus(it)
+                },
+                delete = {
+                    viewModel.deletePost()
                 }
             )
         }

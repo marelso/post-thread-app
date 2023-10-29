@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -107,7 +108,9 @@ fun PostCard(post: Post, onClick: ((Int) -> Unit)) {
 
 @Composable
 fun PostDetail(
-    post: Post, updateStatus: (Boolean) -> Unit, goBack: (Unit) -> Unit
+    post: Post, updateStatus: (Boolean) -> Unit,
+    goBack: (Unit) -> Unit,
+    delete: (Unit) -> Unit
 ) {
     var status by remember { mutableStateOf(post.status) }
 
@@ -138,6 +141,15 @@ fun PostDetail(
                     status = it
                     updateStatus.invoke(status)
                 })
+                Icon(
+                    modifier = Modifier
+                        .graphicsLayer(scaleY = 1.5f, scaleX = 1.5f)
+                        .padding(start = 8.dp)
+                        .clickable { delete.invoke(Unit) },
+                    imageVector = Icons.Default.Delete,
+                    tint = Color(android.graphics.Color.parseColor("#FF5252")),
+                    contentDescription = stringResource(id = R.string.warning),
+                )
             })
         SubcomposeAsyncImage(
             model = post.bannerImage,
