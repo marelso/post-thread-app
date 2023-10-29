@@ -1,6 +1,7 @@
 package com.marelso.postthread.ui
 
 import android.util.Log
+import android.widget.ListView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
@@ -35,7 +36,9 @@ sealed class Screen(var route: String) {
 fun setupNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
-            HomeScreen(navHostController = navController)
+            val viewModel = getViewModel<PostListViewModel>()
+
+            HomeScreen(navHostController = navController, viewModel = viewModel)
         }
 
         composable(route = Screen.Create.route) {

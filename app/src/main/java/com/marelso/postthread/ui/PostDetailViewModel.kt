@@ -16,7 +16,11 @@ class PostDetailViewModel(
     )
     val postUiState: StateFlow<PostUiState> = _postUiState
 
-    fun fetchContent() = viewModelScope.launch {
+    init {
+        fetchContent()
+    }
+
+    private fun fetchContent() = viewModelScope.launch {
         val result = service.get(reference)
 
         _postUiState.value = if (result.isSuccessful) result.body()?.let {
@@ -37,12 +41,20 @@ class PostDetailViewModel(
     }
 
     fun deletePost() = viewModelScope.launch {
-        service.delete(reference)
+        _postUiState.value = PostUiState.Loading
+        val result = service.delete(reference)
+
+        _postUiState.value = if(result.isSuccessful) PostUiState.Delete
+        else PostUiState.Error(
+            "Something went wrong",
+            "We have an issue while deleting resource, try again later"
+        )
     }
 }
 
 sealed class PostUiState {
     object Loading : PostUiState()
+    object Delete : PostUiState()
     data class Error(
         val headline: String = "Something went wrong",
         val subtitle: String

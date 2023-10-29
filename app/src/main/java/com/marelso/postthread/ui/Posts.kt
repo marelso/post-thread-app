@@ -321,15 +321,17 @@ fun BasicInfoStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                modifier = Modifier.padding(vertical = 30.dp),
-                text = "Share post images with us.",
+                modifier = Modifier.padding(vertical = 30.dp)
+                    .fillMaxWidth(),
+                text = "Share post info with us.",
                 style = typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold
                 )
             )
 
             TextField(
-                modifier = Modifier.padding(vertical = 16.dp),
+                modifier = Modifier.padding(vertical = 16.dp)
+                    .fillMaxWidth(),
                 value = viewModel.headline.value,
                 label = { Text(text = "Post headline") },
                 placeholder = { Text(text = "Your best headline") },
@@ -339,7 +341,8 @@ fun BasicInfoStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
             )
 
             TextField(
-                modifier = Modifier.padding(vertical = 16.dp),
+                modifier = Modifier.padding(vertical = 16.dp)
+                    .fillMaxWidth(),
                 value = viewModel.description.value,
                 label = { Text(text = "Post description") },
                 placeholder = { Text(text = "Awesome description") },
@@ -373,7 +376,8 @@ fun ImagesStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                modifier = Modifier.padding(vertical = 30.dp),
+                modifier = Modifier.padding(vertical = 30.dp)
+                    .fillMaxWidth(),
                 text = "Share post images with us.",
                 style = typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold
@@ -381,7 +385,8 @@ fun ImagesStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
             )
 
             TextField(
-                modifier = Modifier.padding(vertical = 16.dp),
+                modifier = Modifier.padding(vertical = 16.dp)
+                    .fillMaxWidth(),
                 value = viewModel.bannerImage.value,
                 label = { Text(text = "Banner image") },
                 placeholder = { Text(text = "Awesome image") },
@@ -391,7 +396,8 @@ fun ImagesStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
             )
 
             TextField(
-                modifier = Modifier.padding(vertical = 16.dp),
+                modifier = Modifier.padding(vertical = 16.dp)
+                    .fillMaxWidth(),
                 value = viewModel.previewImage.value,
                 label = { Text(text = "Preview image") },
                 placeholder = { Text(text = "Awesome image") },
@@ -425,7 +431,8 @@ fun ContentStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                modifier = Modifier.padding(vertical = 30.dp),
+                modifier = Modifier.padding(vertical = 30.dp)
+                    .fillMaxWidth(),
                 text = "Share what are you thinking with us.",
                 style = typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold
@@ -435,7 +442,8 @@ fun ContentStep(viewModel: CreatePostViewModel, onClick: (Unit) -> Unit) {
             TextField(
                 modifier = Modifier
                     .padding(vertical = 16.dp)
-                    .fillMaxSize(),
+                    .fillMaxWidth()
+                    .height(380.dp),
                 value = viewModel.content.value,
                 label = { Text(text = "The content goes here") },
                 placeholder = { Text(text = "...") },
